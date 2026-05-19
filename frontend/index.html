@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Login</h2>
+<input id="email">
+<input id="senha" type="password">
+<button onclick="login()">Entrar</button>
+
+<h2>Tarefas</h2>
+<input id="titulo">
+<button onclick="criar()">Criar</button>
+
+<ul id="lista"></ul>
+
+<script>
+let token="";
+
+function login(){
+fetch("http://localhost:8080/auth/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email:email.value,senha:senha.value})
+})
+.then(r=>r.json())
+.then(d=>{token=d.token; carregar();});
+}
+
+function criar(){
+fetch("http://localhost:8080/tarefas",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({titulo:titulo.value,status:"PENDENTE"})
+}).then(()=>carregar());
+}
+
+function carregar(){
+fetch("http://localhost:8080/tarefas")
+.then(r=>r.json())
+.then(data=>{
+lista.innerHTML="";
+data.forEach(t=>{
+let li=document.createElement("li");
+li.innerText=t.titulo;
+lista.appendChild(li);
+});
+});
+}
+</script>
+
+</body>
+</html>
